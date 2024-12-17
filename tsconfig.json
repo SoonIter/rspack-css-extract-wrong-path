@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+      "strict": true,
+      "baseUrl": "./",
+      "paths": {
+          "*": ["./src/*"]
+      },
+      "esModuleInterop": true,
+      "jsx": "preserve",
+      "isolatedModules": true,
+      "module": "esnext",
+      "moduleResolution": "node",
+      "removeComments": false,
+      "incremental": false,
+      "sourceMap": false,
+      "skipLibCheck": true,
+      "target": "esnext",
+      "forceConsistentCasingInFileNames": true,
+      "noEmit": true,
+      "types": ["node"]
+  },
+  "include": ["src/**/*", "frontend/**/*"],
+  "exclude": ["node_modules"]
+}
