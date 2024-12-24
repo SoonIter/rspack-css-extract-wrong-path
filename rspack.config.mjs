@@ -2,6 +2,7 @@ import path, { join } from 'path';
 import { fileURLToPath } from 'url';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import { rspack } from '@rspack/core';
+import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import webpack from 'webpack';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -22,14 +23,6 @@ const config = {
     // 'assets/react': [join(__dirname, './src/assets/react.svg')],
   },
   plugins: [new HtmlWebpackPlugin()],
-  // resolve: {
-  //   extensionAlias: {
-  //     '.js': ['.ts', '.tsx', '.js'],
-  //   },
-  //   tsConfig: {
-  //     configFile: './tsconfig.json',
-  //   }
-  // },
   optimization: {
     minimize: false,
   },
@@ -38,14 +31,14 @@ const config = {
     path: isRunningWebpack
       ? path.resolve(__dirname, 'webpack-dist')
       : path.resolve(__dirname, 'rspack-dist'),
-    filename: '[name][contenthash:10].js',
+    filename: '[name].js',
     publicPath: 'auto',
-    assetModuleFilename: 'static/asset/[name].[ext]',
-    module: true,
-    chunkFormat: 'module',
-    chunkLoading: 'import',
-    workerChunkLoading: 'import',
-    wasmLoading: 'fetch',
+    // assetModuleFilename: 'static/asset/[name].[ext]',
+    // module: true,
+    // chunkFormat: 'module',
+    // chunkLoading: 'import',
+    // workerChunkLoading: 'import',
+    // wasmLoading: 'fetch',
   },
   stats: {
     children: true,
@@ -53,18 +46,10 @@ const config = {
   module: {
     generator: {
       asset: {
-        publicPath: 'auto'
-      }
+        publicPath: '',
+      },
     },
     rules: [
-      {
-        test: /\.svg$/,
-        type: 'asset',
-      },
-      {
-        test: /\.js$/,
-        loader: path.join(__dirname, './test-loader.cjs'),
-      },
       {
         resourceQuery: /raw/,
         type: 'asset/source',
@@ -90,33 +75,100 @@ const config = {
             type: 'asset',
             parser: {
               dataUrlCondition: {
-                maxSize: 0,
+                maxSize: 1000,
               },
             },
             generator: {
               filename: 'static/svg/[name].svg',
-              publicPath: 'auto'
             },
           },
         ],
       },
+      ...(isRunningRspack
+        ? [
+            {
+              test: /\.css$/,
+              type: 'javascript/auto',
+              dependency: {
+                not: 'url',
+              },
+              sideEffects: true,
+              use: [
+                {
+                  loader: rspack.CssExtractRspackPlugin.loader,
+                  options: {
+                    // publicPath: 'auto',
+                  },
+                },
+                {
+                  loader: 'css-loader',
+                  options: {
+                    importLoaders: 1,
+                    modules: {
+                      auto: true,
+                      namedExport: false,
+                      exportGlobals: false,
+                      exportLocalsConvention: 'camelCase',
+                      localIdentName: '[local]-[hash:base64:6]',
+                    },
+                    sourceMap: true,
+                  },
+                },
+              ],
+            },
+          ]
+        : [
+            {
+              test: /\.css$/,
+              type: 'javascript/auto',
+              dependency: {
+                not: 'url',
+              },
+              sideEffects: true,
+              use: [
+                {
+                  loader: MiniCssExtractPlugin.loader,
+                  options: {
+                    publicPath: 'auto',
+                  },
+                },
+                {
+                  loader: 'css-loader',
+                  options: {
+                    importLoaders: 1,
+                    modules: {
+                      auto: true,
+                      namedExport: false,
+                      exportGlobals: false,
+                      exportLocalsConvention: 'camelCase',
+                      localIdentName: '[local]-[hash:base64:6]',
+                    },
+                    sourceMap: true,
+                  },
+                },
+              ],
+            },
+          ]),
     ],
   },
   experiments: {
     css: true,
-    outputModule: true
+    outputModule: true,
   },
-  // plugins: [
-  //   isRunningRspack
-  //     ? new rspack.BannerPlugin({
-  //         banner: '/* this is a banner */',
-  //         raw: true,
-  //       })
-  //     : new webpack.BannerPlugin({
-  //         banner: '/* this is a banner */',
-  //         // raw: true,
-  //       }),
-  // ],
+
+  plugins: [
+    isRunningRspack
+      ? new rspack.CssExtractRspackPlugin({
+          filename: 'static/css/[name].[contenthash:8].css',
+          chunkFilename: 'static/css/async/[name].[contenthash:8].css',
+          ignoreOrder: true,
+        })
+      : new MiniCssExtractPlugin({
+          filename: 'static/css/[name].[contenthash:8].css',
+          chunkFilename: 'static/css/async/[name].[contenthash:8].css',
+          ignoreOrder: true,
+        }),
+  ],
 };
 
 export default config;
