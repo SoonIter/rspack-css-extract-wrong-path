@@ -20,7 +20,6 @@ const config = {
   devtool: false,
   entry: {
     index: [join(__dirname, './src/index.mjs')],
-    // 'assets/react': [join(__dirname, './src/assets/react.svg')],
   },
   plugins: [new HtmlWebpackPlugin()],
   optimization: {
@@ -32,13 +31,7 @@ const config = {
       ? path.resolve(__dirname, 'webpack-dist')
       : path.resolve(__dirname, 'rspack-dist'),
     filename: '[name].js',
-    publicPath: 'auto',
-    // assetModuleFilename: 'static/asset/[name].[ext]',
-    // module: true,
-    // chunkFormat: 'module',
-    // chunkLoading: 'import',
-    // workerChunkLoading: 'import',
-    // wasmLoading: 'fetch',
+    publicPath: '/',
   },
   stats: {
     children: true,
@@ -46,7 +39,7 @@ const config = {
   module: {
     generator: {
       asset: {
-        publicPath: '',
+        publicPath: '/',
       },
     },
     rules: [
@@ -96,9 +89,6 @@ const config = {
               use: [
                 {
                   loader: rspack.CssExtractRspackPlugin.loader,
-                  options: {
-                    // publicPath: 'auto',
-                  },
                 },
                 {
                   loader: 'css-loader',
@@ -128,9 +118,6 @@ const config = {
               use: [
                 {
                   loader: MiniCssExtractPlugin.loader,
-                  options: {
-                    publicPath: 'auto',
-                  },
                 },
                 {
                   loader: 'css-loader',
@@ -152,10 +139,8 @@ const config = {
     ],
   },
   experiments: {
-    css: true,
     outputModule: true,
   },
-
   plugins: [
     isRunningRspack
       ? new rspack.CssExtractRspackPlugin({
