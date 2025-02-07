@@ -50,20 +50,6 @@ const config = {
       {
         test: /\.svg$/i,
         oneOf: [
-          /* config.module.rule('svg').oneOf('svg-asset-url') */
-          {
-            type: 'asset/resource',
-            resourceQuery: /(__inline=false|url)/,
-            generator: {
-              filename: 'static/svg/[name].svg',
-            },
-          },
-          /* config.module.rule('svg').oneOf('svg-asset-inline') */
-          {
-            type: 'asset/inline',
-            resourceQuery: /inline/,
-          },
-          /* config.module.rule('svg').oneOf('svg-asset') */
           {
             type: 'asset',
             parser: {
@@ -137,9 +123,6 @@ const config = {
             },
           ]),
     ],
-  },
-  experiments: {
-    outputModule: true,
   },
   plugins: [
     isRunningRspack
