@@ -31,17 +31,21 @@ const config = {
       ? path.resolve(__dirname, 'webpack-dist')
       : path.resolve(__dirname, 'rspack-dist'),
     filename: '[name].js',
-    publicPath: '/',
+    publicPath: 'auto',
+    cssFilename: 'static/css/[name].[contenthash:8].css',
   },
   stats: {
     children: true,
   },
+  experiments: {
+    css: true
+  },
   module: {
-    generator: {
-      asset: {
-        publicPath: '/',
-      },
-    },
+    // generator: {
+    //   asset: {
+    //     publicPath: '/',
+    //   },
+    // },
     rules: [
       {
         resourceQuery: /raw/,
@@ -63,79 +67,79 @@ const config = {
           },
         ],
       },
-      ...(isRunningRspack
-        ? [
-            {
-              test: /\.css$/,
-              type: 'javascript/auto',
-              dependency: {
-                not: 'url',
-              },
-              sideEffects: true,
-              use: [
-                {
-                  loader: rspack.CssExtractRspackPlugin.loader,
-                },
-                {
-                  loader: 'css-loader',
-                  options: {
-                    importLoaders: 1,
-                    modules: {
-                      auto: true,
-                      namedExport: false,
-                      exportGlobals: false,
-                      exportLocalsConvention: 'camelCase',
-                      localIdentName: '[local]-[hash:base64:6]',
-                    },
-                    sourceMap: true,
-                  },
-                },
-              ],
-            },
-          ]
-        : [
-            {
-              test: /\.css$/,
-              type: 'javascript/auto',
-              dependency: {
-                not: 'url',
-              },
-              sideEffects: true,
-              use: [
-                {
-                  loader: MiniCssExtractPlugin.loader,
-                },
-                {
-                  loader: 'css-loader',
-                  options: {
-                    importLoaders: 1,
-                    modules: {
-                      auto: true,
-                      namedExport: false,
-                      exportGlobals: false,
-                      exportLocalsConvention: 'camelCase',
-                      localIdentName: '[local]-[hash:base64:6]',
-                    },
-                    sourceMap: true,
-                  },
-                },
-              ],
-            },
-          ]),
+      //   ...(isRunningRspack
+      //     ? [
+      //         {
+      //           test: /\.css$/,
+      //           type: 'javascript/auto',
+      //           dependency: {
+      //             not: 'url',
+      //           },
+      //           sideEffects: true,
+      //           use: [
+      //             {
+      //               loader: rspack.CssExtractRspackPlugin.loader,
+      //             },
+      //             {
+      //               loader: 'css-loader',
+      //               options: {
+      //                 importLoaders: 1,
+      //                 modules: {
+      //                   auto: true,
+      //                   namedExport: false,
+      //                   exportGlobals: false,
+      //                   exportLocalsConvention: 'camelCase',
+      //                   localIdentName: '[local]-[hash:base64:6]',
+      //                 },
+      //                 sourceMap: true,
+      //               },
+      //             },
+      //           ],
+      //         },
+      //       ]
+      //     : [
+      //         {
+      //           test: /\.css$/,
+      //           type: 'javascript/auto',
+      //           dependency: {
+      //             not: 'url',
+      //           },
+      //           sideEffects: true,
+      //           use: [
+      //             {
+      //               loader: MiniCssExtractPlugin.loader,
+      //             },
+      //             {
+      //               loader: 'css-loader',
+      //               options: {
+      //                 importLoaders: 1,
+      //                 modules: {
+      //                   auto: true,
+      //                   namedExport: false,
+      //                   exportGlobals: false,
+      //                   exportLocalsConvention: 'camelCase',
+      //                   localIdentName: '[local]-[hash:base64:6]',
+      //                 },
+      //                 sourceMap: true,
+      //               },
+      //             },
+      //           ],
+      //         },
+      //       ]),
     ],
   },
   plugins: [
-    isRunningRspack
-      ? new rspack.CssExtractRspackPlugin({
-          filename: 'static/css/[name].[contenthash:8].css',
-          chunkFilename: 'static/css/async/[name].[contenthash:8].css',
-          ignoreOrder: true,
-        })
-      : new MiniCssExtractPlugin({
-          filename: 'static/css/[name].[contenthash:8].css',
-          chunkFilename: 'static/css/async/[name].[contenthash:8].css',
-          ignoreOrder: true,
-        }),
+    // isRunningRspack
+    //   ? new rspack.CssExtractRspackPlugin({
+    //       filename: 'static/css/[name].[contenthash:8].css',
+    //       chunkFilename: 'static/css/async/[name].[contenthash:8].css',
+    //       ignoreOrder: true,
+    //     })
+    //   : new MiniCssExtractPlugin({
+    //       filename: 'static/css/[name].[contenthash:8].css',
+    //       chunkFilename: 'static/css/async/[name].[contenthash:8].css',
+    //       ignoreOrder: true,
+    //     }),
   ],
 };
 
